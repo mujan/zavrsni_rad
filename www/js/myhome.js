@@ -2,8 +2,9 @@ var a = true;
 function onDeviceReadyHome() {
     // Get the most accurate position updates available on the
     // device.
-    var options = {maximumAge: 1000, timeout: 10000, enableHighAccuracy: false};
-    watchID = navigator.geolocation.watchPosition(onSuccessHome, onErrorHome, options);
+    //var options = {maximumAge: 1000, timeout: 10000, enableHighAccuracy: false};
+    navigator.geolocation.getCurrentPosition(onSuccessHome);
+    ///watchID = navigator.geolocation.watchPosition(onSuccessHome, onErrorHome, options);
 }
 // onSuccess Geolocation
 
