@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+        <title>Moja lokacija</title>
+        <link rel="stylesheet" href="css/googleMap.css" />
+        <link rel="stylesheet" href="css/jquery.mobile-1.0.1.min.css" />
+        <script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-1.7.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-mobile-1.0.1/jquery.mobile.min.js"></script>
+        <script>
+            $(document).bind("mobileinit", function() {
+                $.mobile.defaultPageTransition = 'none';
+                $.mobile.defaultDialogTransition = 'none';
+                $.mobile.useFastClick = true;
+            });
+        </script>
+        <script type="text/javascript" src="js/gps.js"></script>
+        <script type="text/javascript" src="js/showMap.js"></script>
+        <script type="text/javascript" src="js/preloader.js"></script>
+        <script type="text/javascript" src="js/LatLng.js"></script>
+        <script type="text/javascript" src="js/gmaps.js"></script>
+        <script type="text/javascript" src="js/destinationRoute.js"></script>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="js/pop_up.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
+        <script type="text/javascript" src="js/handlerWithEvent.js"></script>
+        <!-- -->
+        <script type="text/javascript" src="js/converteAddress_to_latlng.js"></script>
+        <!-- -->
+        <script type="text/javascript" src="js/ajax.js"></script>
+        <script type="text/javascript" src="js/dialog.js"></script>
+        <script type="text/javascript" src="js/address_map.js"></script>
+        <script type="text/javascript" src="js/myhome.js"></script>
+    </head>
+    <body> 
+        <div data-dom-cache="false" data-role="page" id="index" >
+            <div data-role="header" data-theme="b">
+                <h1>Aplikacija</h1>
+            </div>
+            <div data-role="content"  style="padding:0.5em;">
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-theme="c">
+                        <a href="#mylocation" rel="external" id="remove_href_mylocation">
+                            Moja lokacija
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="#list" id="list_id" data-transition="slide">
+                            Tip objekta
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="#address_position" id="adr_pos">
+                            Pronadji ulicu sa zeljenom adresom
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="#myhome" id="_home">
+                            Omiljena destinacija
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="geolocation">
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed">
+                <h4>Geolociranje</h4>
+            </div>
+        </div>
+        <!-- My location page -->
+        <div data-dom-cache="false" data-role="page" id="mylocation" style="position: relative">
+            <div data-role="header" data-theme="b">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <a id="stopWatch" style="margin-left: 100px;" data-role="button" class="ui-btn-left">
+                    Zaustavi
+                </a>
+                <h1 id="header"></h1>
+            </div>
+            <div id="loaderImage1" class="loaderImage"></div>
+            <div style="width: 100%;height: 500px;" id="map" ></div>
+            <div data-role="footer" data-theme="b">
+                <h4>Geolociranje</h4>
+            </div>
+        </div>
+        <!--List-->
+        <div data-dom-cache="false" data-role="page" id="list">
+            <div data-role="header" data-theme="b" id="nerby">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Lista objekata</h1>
+            </div>
+            <div class="ui-content" data-role="content" role="main" id="append">
+                <ul class="ui-listview" data-filter="true" data-role="listview"></ul>
+            </div>
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+        <!--Nerby object-->
+        <div data-dom-cache="false" data-role="page" id="nerbyobject_object" style="overflow: none !important">
+            <div data-role="header" data-theme="b" id="nerby">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Najblizi objekat</h1>
+            </div>
+            <div id="loaderImage2" class="loaderImage"></div>
+            <h2 id="name_of_object"></h2>
+            
+            
+            
+            <h3 id="name_of_object_address" style="margin: -25px 0 0 0;clear: both;float: left"></h3><!--For aplication change margin on margin: -25px 0 0 0-->
+            
+            <a id="add_button" style='float: right;' data-transition="slide" class="ui-btn ui-btn-icon-left ui-corner-left ui-btn-up-b" data-icon="plus" data-role="button" href="#add_new_object">
+                <img src="img/add.png" width="25px"/>
+            </a>
+            
+            <div class="span11">
+                <div id="route_map" style="overflow: none !important"></div>
+                <ul id="instructions">
+                </ul>
+            </div>
+            <input id="lat" type="hidden" name="latitude" value="null"/>
+            <input id="lng" type="hidden" name="longitude" value="null"/>
+            <input id="antlat" type="hidden" name="latitude" value="null"/>
+            <input id="antlng" type="hidden" name="longitude" value="null"/>
+            <input id="googleMap" type="hidden" />
+
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+        <!-- add_new_object-->
+        <div data-dom-cache="false" data-role="page" id="add_new_object">
+            <div data-role="header" data-theme="b">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Dodaj novi objekat</h1>
+            </div>
+            <div class="content">
+                <form onsubmit="submit_function();
+                return false;" data-ajax="false" name="add_new_object">
+                    <table class="userdata" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label class="ui-input-text" for="object_name">Naziv objekta*</label>
+                                </td>
+                                <td>
+                                    <input id="object_name" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" data-mandatory="1" style="width:100%; " value="" name="object_name">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ui-input-text" for="object_address">Adresa*</label>
+                                </td>
+                                <td>
+                                    <input id="object_address" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" data-mandatory="1" style="width:100%; " value="" name="object_address">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ui-input-text" for="geolat">Geografska sirina*</label>
+                                </td>
+                                <td>
+                                    <input id="geolat" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" data-mandatory="1" style="width:100%; " value="" name="geolat">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ui-input-text" for="geolng">Geografska duzina*</label>
+                                </td>
+                                <td>
+                                    <input id="geolng" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" data-mandatory="1" style="width:100%; " value="" name="geolng">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ui-input-text" for="object_type">Tip objekta*</label>
+                                </td>
+                                <td>
+                                    <input id="object_type" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" data-mandatory="1" style="width:100%; " placeholder="npr: kafic, fudbalski teren...." value="" name="object_type">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    <a class="ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-up-b" style="margin-left:0px; margin-top:12px;" onclick="submit_function();" data-inline="true" data-role="button" data-theme="b" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span">
+                                        <span class="ui-btn-inner ui-btn-corner-all">
+                                            <span class="ui-btn-text">   Potvrdi   </span>
+                                        </span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+        <!-- find a position to address through -->
+        <div data-dom-cache="false" data-role="page" id="address_position">
+            <div data-role="header" data-theme="b">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Adresa</h1>
+            </div>
+            <form method="post" id="geocoding_form" data-ajax="false">
+                <div style="width: 100%;float: left;clear: both">
+
+                    <div style="width: 420px; float: left">
+                        <div class="ui-field-contain ui-body ui-br" data-role="fieldcontain">
+                            <label style="margin: 8px 0 0 51px" class="ui-input-text"  for="name">Adresa:</label>
+                            <input class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" id="_address" value="" name="name">
+                        </div>
+                    </div>
+                    <div style="width: 135px;float: left;margin: 5px;">
+                        <input type="submit" class="ui-btn-up-b" data-theme="b" value="Potvrdi" />
+                    </div>
+
+                </div>
+            </form>
+            <div style="width: 100%;height: 300px;" id="address_map"></div>
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+        <!-- My home -->
+        <div data-dom-cache="false" data-role="page" id="myhome">
+            <div data-role="header" data-theme="b">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Adresa</h1>
+            </div>
+            <div style="clear: both">
+                <form method="post" id="__myhome" data-ajax="false">
+                    <div style="width: 100%;float: left;clear: both">
+
+                        <div style="width: 363px; float: left">
+                            <div class="ui-field-contain ui-body ui-br" data-role="fieldcontain">
+                                <label style="margin:8px 13px 0px 51px;width: 31%" class="ui-input-text"  for="user_name">Korisnicko ime:</label>
+                                <input style="width: 40%;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" id="user_name" value="" name="user_name">
+                            </div>
+                        </div>
+                        <div style="width: 135px;float: left;margin: 5px;">
+                            <input id="ko" type="submit" class="ui-btn-up-b" data-theme="b" value="Potvrdi" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="loaderImage3" class="loaderImage"></div>
+            <div class="span12">
+                <div  id="routeMyhome" style="height: 300px;float: left;width: 70%"></div>
+                <ul id="instructionsHome"></ul>
+            </div>
+            <input type="hidden" id="hidden_lat">
+            <input type="hidden" id="hidden_lng">
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+        <!-- Page for entry user data -->
+        <div data-dom-cache="false" data-role="page" id="sing_form" style="overflow:hidden;">
+            <div data-role="header" data-theme="b">
+                <a data-role="button" href="index.html" data-icon="home" data-iconpos="left"
+                   class="ui-btn-right">
+                    Home
+                </a>
+                <a data-role="button" data-rel="back" href="#page1" data-icon="arrow-l"
+                   data-iconpos="left" class="ui-btn-left">
+                    Back
+                </a>
+                <h1>Unos podataka</h1>
+            </div>
+            <form action="" method="post" id="user_data" data-ajax="false">
+
+                <div class="" data-role="fieldcontain">
+                    <label class="ui-input-text min-width" for="_fname">Ime:</label>
+                    <input id="_fname" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" value="" name="fname_r">
+                </div>
+                <div class="" data-role="fieldcontain">
+                    <label class="ui-input-text min-width" for="number">Prezime</label>
+                    <input id="lname" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" value="" name="lname_r">
+                </div>
+                <div class=" " data-role="fieldcontain">
+                    <label class="ui-input-text min-width" for="number">Korisnicko ime:</label>
+                    <input id="number" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" value="" name="user_name_r">
+                </div>
+                <div class=" " data-role="fieldcontain">
+                    <label class="ui-input-text min-width" for="__adresa">Adresa:</label>
+                    <input id="__address" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" value="" name="adresa_r">
+                </div>
+                <div class="min-width left">
+                    &nbsp;
+                </div>
+                <div class="left">
+                    <button class="ui-btn-hidden" value="submit-value" name="submit" data-theme="b" type="submit" aria-disabled="false">Potvrdi</button>
+                </div>
+            </form>
+            <div data-role="footer" data-position="fixed" data-theme="b"><h4>Geolociranje</h4></div>
+        </div>
+    </body>
+</html>

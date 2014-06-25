@@ -1,0 +1,3 @@
+"permissions": {
+    "geolocation": { "description": "Used to position the map to your current position" }
+}
