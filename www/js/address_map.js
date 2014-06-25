@@ -49,7 +49,7 @@ $(document).ready(function() {
         var input_data = $("#user_name").val();
         if (!input_data) {
             alert('Morate uneti korisnicko ime!');
-            return;
+
         } else { //chack if user name exist in db
             check_user_name("http://localhost/server_side/switch.php?action=check_user_name&inputData=" + input_data,//ajax.js line:43
                     function(data) {
