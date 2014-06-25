@@ -24,7 +24,6 @@ function callAjax(url_string,callback) {
     return true;
 }
 function check_user_name(url_name, callback) {
-    alert(url_name);
     var url_to_call = url_name + "&callback=successCallback";
     console.log(url_to_call);
     $.ajax({
@@ -41,6 +40,7 @@ function check_user_name(url_name, callback) {
 
         },
         success: function(data, textStatus, jqXHR) {
+            alert(data);
             callback(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
