@@ -1,5 +1,7 @@
 var a = true;
 function onDeviceReadyHome() {
+    alert ("foo");
+    return;
     // Get the most accurate position updates available on the
     // device.
     //var options = {maximumAge: 1000, timeout: 10000, enableHighAccuracy: false};
