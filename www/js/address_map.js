@@ -42,6 +42,8 @@ $(document).ready(function() {
 var user_name = [];
 $(document).ready(function() {
     $("#__myhome").submit(function(event) {//line: 191 <!-- My home -->
+        alert("foo");
+        return;
         event.preventDefault();
         $("#instructionsHome").hide();//hide instrunction of route
         $("#routeMyhome").hide();//this is map
