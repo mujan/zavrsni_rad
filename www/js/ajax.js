@@ -34,10 +34,10 @@ function check_user_name(url_name, callback) {
         jsonpCallback: "successCallback",
         async: true,
         beforeSend: function(xhr) {
-
+        alert('beforeSend');
         },
         complete: function(jqXHR, textStatus) {
-
+        alert('complete');
         },
         success: function(data, textStatus, jqXHR) {
             alert(data);
