@@ -8,5 +8,3 @@
     <preference name="webviewbounce" value="true"/>
     <icon src="res/icon.jpg" width="57" height="57" density="mdpi"/>
 </widget>
-
-    <gap:plugin name="org.apache.cordova.core.geolocation" />
