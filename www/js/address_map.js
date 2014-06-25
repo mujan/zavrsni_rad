@@ -50,7 +50,7 @@ $(document).ready(function() {
         if (!input_data) {
             alert('Morate uneti korisnicko ime!');
         } else { //chack if user name exist in db
-            check_user_name("http://localhost/server_side/switch.php?action=check_user_name&inputData=" + input_data,//ajax.js line:43
+            check_user_name("http://geolociranje.lockernerd.co.uk/server_side/switch.php?action=check_user_name&inputData=" + input_data,//ajax.js line:43
                     function(data) {
                         alert(data)
                         //check_data(data);
